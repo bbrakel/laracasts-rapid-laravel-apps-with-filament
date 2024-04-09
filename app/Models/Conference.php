@@ -3,6 +3,9 @@
 namespace App\Models;
 
 use App\Enums\Region;
+use App\Enums\Status;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
@@ -10,6 +13,7 @@ use Filament\Forms\Components\MarkdownEditor;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
@@ -29,6 +33,7 @@ class Conference extends Model
         'end_date' => 'datetime',
         'is_published' => 'boolean',
         'venue_id' => 'integer',
+        'status' => Status::class,
         'region' => Region::class,
     ];
 
@@ -50,63 +55,81 @@ class Conference extends Model
     public static function getForm(): array
     {
         return [
-            Section::make('Conference Details')
-                ->description('Some basic information about this section')
-                ->icon('heroicon-o-information-circle')
-                ->columns(2)
-                ->schema([
-                    TextInput::make('name')
-                        ->columnSpanFull()
-                        ->label('Conference Name')
-                        ->default('My Conference')
-                        ->required()
-                        ->maxLength(60),
-                    MarkdownEditor::make('description')
-                        ->columnSpanFull()
-                        ->required()
-                        ->maxLength(255),
-                    DateTimePicker::make('start_date')
-                        ->native(false)
-                        ->required(),
-                    DateTimePicker::make('end_date')
-                        ->native(false)
-                        ->required(),
-                ]),
-            Section::make('Location')
-                ->columns(2)
-                ->schema([
-                    Select::make('region')
-                        ->live()
-                        ->enum(Region::class)
-                        ->options(Region::class),
-                    Select::make('venue_id')
-                        ->searchable()
-                        ->preload()
-                        ->editOptionForm(Venue::getForm())
-                        ->createOptionForm(Venue::getForm())
-                        ->relationship('venue', 'name', modifyQueryUsing: function (Builder $query, Get $get) {
-                            return $query->where('region', $get('region'));
-                        }),
-                    Fieldset::make('Status')
-                        ->columns(1)
-                        ->schema([
-                            Select::make('status')
-                                ->options([
-                                    'draft' => 'Draft',
-                                    'published' => 'Published',
-                                    'archived' => 'Archived',
-                                ])
-                                ->required(),
-                            Toggle::make('is_published'),
-                        ]),
-
-                ]),
-            CheckboxList::make('speakers')
+            Tabs::make()
                 ->columnSpanFull()
-                ->relationship('speakers', 'name')
-                ->options(Speaker::all()->pluck('name', 'id'))
-                ->required()
-                ->columns(3),
+                ->tabs([
+                    Tabs\Tab::make('Conference Details')
+                        ->schema([
+                            TextInput::make('name')
+                                ->columnSpanFull()
+                                ->label('Conference Name')
+                                ->default('My Conference')
+                                ->required()
+                                ->maxLength(60),
+                            MarkdownEditor::make('description')
+                                ->columnSpanFull()
+                                ->required()
+                                ->maxLength(255),
+                            DateTimePicker::make('start_date')
+                                ->native(false)
+                                ->required(),
+                            DateTimePicker::make('end_date')
+                                ->native(false)
+                                ->required(),
+
+                        ]),
+                    Tabs\Tab::make('Location')
+                        ->schema([
+                            Select::make('region')
+                                ->live()
+                                ->enum(Region::class)
+                                ->options(Region::class),
+                            Select::make('venue_id')
+                                ->searchable()
+                                ->preload()
+                                ->editOptionForm(Venue::getForm())
+                                ->createOptionForm(Venue::getForm())
+                                ->relationship('venue', 'name', modifyQueryUsing: function (Builder $query, Get $get) {
+                                    return $query->where('region', $get('region'));
+                                }),
+                            Fieldset::make('Status')
+                                ->columns(1)
+                                ->schema([
+                                    Select::make('status')
+                                        ->options(Status::class)
+                                        ->required(),
+                                    Toggle::make('is_published'),
+                                ]),
+                        ]),
+                    Tabs\Tab::make('Speakers')
+                        ->schema([
+                            CheckboxList::make('speakers')
+                                ->columnSpanFull()
+                                ->relationship('speakers', 'name')
+                                ->options(Speaker::all()->pluck('name', 'id'))
+                                ->required()
+                                ->columns(3),
+                        ])
+                ]),
+            Actions::make([
+                Action::make('star')
+                    ->label('Fill with Factory Data')
+                    ->icon('heroicon-m-star')
+                    ->visible(function (string $operation) {
+                        if ($operation !== 'create') {
+                            return false;
+                        }
+                        if (! app()->environment('local')) {
+                            return false;
+                        }
+
+                        return true;
+                    })
+                    ->action(function ($livewire) {
+                        $data = Conference::factory()->make()->toArray();
+                        $livewire->form->fill($data);
+                    })
+            ]),
         ];
     }
 }
