@@ -10,18 +10,16 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Fieldset;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\RichEditor;
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Builder;
 
 class Conference extends Model
 {
@@ -109,7 +107,7 @@ class Conference extends Model
                                 ->options(Speaker::all()->pluck('name', 'id'))
                                 ->required()
                                 ->columns(3),
-                        ])
+                        ]),
                 ]),
             Actions::make([
                 Action::make('star')
@@ -128,7 +126,7 @@ class Conference extends Model
                     ->action(function ($livewire) {
                         $data = Conference::factory()->make()->toArray();
                         $livewire->form->fill($data);
-                    })
+                    }),
             ]),
         ];
     }

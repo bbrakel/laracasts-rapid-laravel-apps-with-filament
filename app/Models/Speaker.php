@@ -25,7 +25,7 @@ class Speaker extends Model implements HasMedia
         'hometown-hero' => 'Hometown Hero',
         'humanitarian' => 'Works in Humanitarian Field',
         'laracasts-contributor' => 'Laracasts Contributor',
-        'twitter-influencer' => 'Large Twitter Following'
+        'twitter-influencer' => 'Large Twitter Following',
     ];
 
     protected $casts = [
@@ -68,9 +68,9 @@ class Speaker extends Model implements HasMedia
                 ->bulkToggleable()
                 ->options(self::QUALIFICATIONS)
                 ->descriptions([
-                    'business-leader' => 'A nice description to show'
+                    'business-leader' => 'A nice description to show',
                 ])
-                ->columns(3)
+                ->columns(3),
         ];
     }
 }
