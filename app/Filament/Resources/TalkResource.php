@@ -3,10 +3,13 @@
 namespace App\Filament\Resources;
 
 use App\Enums\TalkLength;
+use App\Enums\TalkStatus;
 use App\Filament\Resources\TalkResource\Pages;
 use App\Models\Talk;
 use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
@@ -17,6 +20,7 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
 class TalkResource extends Resource
@@ -103,12 +107,64 @@ class TalkResource extends Resource
                     })
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->slideover(),
+
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('approve')
+                        ->disabled(function (Talk $talk) {
+                            return $talk->status !== TalkStatus::SUBMITTED;
+                        })
+                        ->tooltip('already accepted')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->action(function (Talk $talk) {
+                            $talk->approve();
+                        })
+                        ->after(function () {
+                            Notification::make()
+                                ->success()
+                                ->duration(5000)
+                                ->title('This talk was approved')
+                                ->body('The speaker has been notified and the talk has been added to the conference schedule.')
+                                ->send();
+                        }),
+                    Tables\Actions\Action::make('reject')
+                        ->disabled(function (Talk $talk) {
+                            return $talk->status !== TalkStatus::SUBMITTED;
+                        })
+                        ->requiresConfirmation()
+                        ->icon('heroicon-o-no-symbol')
+                        ->color('danger')
+                        ->action(function (Talk $talk) {
+                            $talk->reject();
+                        })
+                        ->after(function () {
+                            Notification::make()
+                                ->success()
+                                ->duration(5000)
+                                ->title('This talk was approved')
+                                ->body('The speaker has been notified and the talk has been added to the conference schedule.')
+                                ->send();
+                        })
+                ])
+                    ->tooltip('Actions'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('approve')
+                        ->action(function (Collection $talks) {
+                            $talks->each->approve();
+                        })
                 ]),
+            ])
+            ->headerActions([
+                Tables\Actions\Action::make('export')
+                    ->tooltip('This will display all the filtered rows in an array on a new model.')
+                    ->action(function ($livewire) {
+                        dd($livewire->getFilteredTableQuery()->get()->toArray());
+                    })
             ]);
     }
 
@@ -124,7 +180,7 @@ class TalkResource extends Resource
         return [
             'index' => Pages\ListTalks::route('/'),
             'create' => Pages\CreateTalk::route('/create'),
-            'edit' => Pages\EditTalk::route('/{record}/edit'),
+            // 'edit' => Pages\EditTalk::route('/{record}/edit'),
         ];
     }
 }
