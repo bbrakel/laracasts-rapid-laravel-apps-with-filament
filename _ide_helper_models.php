@@ -15,6 +15,19 @@ namespace App\Models{
 /**
  * 
  *
+ * @property-read \App\Models\Conference|null $conference
+ * @method static \Database\Factories\AttendeeFactory factory($count = null, $state = [])
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee query()
+ */
+	class Attendee extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property int $id
  * @property string $name
  * @property string $description
@@ -26,6 +39,8 @@ namespace App\Models{
  * @property int|null $venue_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Attendee> $attendees
+ * @property-read int|null $attendees_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Speaker> $speakers
  * @property-read int|null $speakers_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Talk> $talks
