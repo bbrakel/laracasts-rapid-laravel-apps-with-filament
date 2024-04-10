@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Enums\TalkLength;
+use App\Enums\TalkStatus;
 use App\Models\Speaker;
 use App\Models\Talk;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -23,6 +25,9 @@ class TalkFactory extends Factory
         return [
             'title' => $this->faker->sentence(4),
             'abstract' => $this->faker->text(),
+            'new_talk' => $this->faker->boolean(),
+            'length' => $this->faker->randomElement(TalkLength::class),
+            'status' => $this->faker->randomElement(TalkStatus::class),
             'speaker_id' => Speaker::factory(),
         ];
     }

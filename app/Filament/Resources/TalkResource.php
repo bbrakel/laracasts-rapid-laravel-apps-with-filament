@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\TalkLength;
 use App\Filament\Resources\TalkResource\Pages;
 use App\Models\Talk;
 use Filament\Forms;
@@ -9,10 +10,13 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SpatieMediaLibraryImageColumn;
-use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class TalkResource extends Resource
@@ -60,11 +64,43 @@ class TalkResource extends Resource
                     ->searchable(),
                 // ToggleColumn::make('new_talk'),
                 IconColumn::make('new_talk')
-                    ->label('new')
+                    ->label('New')
                     ->boolean(),
+                TextColumn::make('status')
+                    ->badge()
+                    ->sortable()
+                    ->color(function ($state) {
+                        return $state->getColor();
+                    }),
+                IconColumn::make('length')
+                    ->icon(function ($state) {
+                        return match ($state) {
+                            TalkLength::NORMAL => 'heroicon-o-megaphone',
+                            TalkLength::LIGHTNING => 'heroicon-o-bolt',
+                            TalkLength::KEYNOTE => 'heroicon-o-key',
+                        };
+                    }),
             ])
             ->filters([
-                //
+                SelectFilter::make('speaker')
+                    ->relationship('speaker', 'name')
+                    ->searchable()
+                    ->preload()
+                    ->multiple(),
+                Filter::make('new_talk')
+                    ->label('Only New Talks')
+                    ->toggle()
+                    ->query(function ($query) {
+                        return $query->where('new_talk', true);
+                    }),
+                Filter::make('has_avatar')
+                    ->label('Only with Avatar')
+                    ->toggle()
+                    ->query(function ($query) {
+                        return $query->whereHas('speaker', function (Builder $query) {
+                            $query->whereHas('media');
+                        });
+                    })
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
