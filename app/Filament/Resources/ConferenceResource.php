@@ -13,7 +13,8 @@ class ConferenceResource extends Resource
 {
     protected static ?string $model = Conference::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    // protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'First Group';
 
     public static function form(Form $form): Form
     {

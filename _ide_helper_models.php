@@ -15,11 +15,27 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property int $ticket_cost
+ * @property int $is_paid
+ * @property int $conference_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Conference|null $conference
  * @method static \Database\Factories\AttendeeFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder|Attendee newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Attendee newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|Attendee query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee whereConferenceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee whereIsPaid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee whereTicketCost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Attendee whereUpdatedAt($value)
  */
 	class Attendee extends \Eloquent {}
 }
@@ -163,7 +179,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|User whereUpdatedAt($value)
  */
-	class User extends \Eloquent {}
+	class User extends \Eloquent implements \Filament\Models\Contracts\FilamentUser {}
 }
 
 namespace App\Models{
