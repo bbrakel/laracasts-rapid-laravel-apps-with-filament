@@ -5,7 +5,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 10.48.4.
+ * Generated for Laravel 10.48.7.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -8882,6 +8882,17 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
                         return $instance->hasSent($notifiable, $notification);
+        }
+                    /**
+         * Specify if notification should be serialized and restored when being "pushed" to the queue.
+         *
+         * @param bool $serializeAndRestore
+         * @return \Illuminate\Support\Testing\Fakes\NotificationFake 
+         * @static 
+         */        public static function serializeAndRestore($serializeAndRestore = true)
+        {
+                        /** @var \Illuminate\Support\Testing\Fakes\NotificationFake $instance */
+                        return $instance->serializeAndRestore($serializeAndRestore);
         }
                     /**
          * Get the notifications that have been sent.
@@ -18513,24 +18524,6 @@ namespace Illuminate\Support {
             /**
      * 
      *
-     * @template TKey of array-key
-     * @template-covariant TValue
-     * @implements \ArrayAccess<TKey, TValue>
-     * @implements \Illuminate\Support\Enumerable<TKey, TValue>
-     */        class Collection {
-                    /**
-         * 
-         *
-         * @see \Barryvdh\Debugbar\ServiceProvider::register()
-         * @static 
-         */        public static function debug()
-        {
-                        return \Illuminate\Support\Collection::debug();
-        }
-            }
-            /**
-     * 
-     *
      */        class Str {
                     /**
          * 
@@ -18553,6 +18546,24 @@ namespace Illuminate\Support {
          */        public static function ucwords($value)
         {
                         return \Illuminate\Support\Str::ucwords($value);
+        }
+            }
+            /**
+     * 
+     *
+     * @template TKey of array-key
+     * @template-covariant TValue
+     * @implements \ArrayAccess<TKey, TValue>
+     * @implements \Illuminate\Support\Enumerable<TKey, TValue>
+     */        class Collection {
+                    /**
+         * 
+         *
+         * @see \Barryvdh\Debugbar\ServiceProvider::register()
+         * @static 
+         */        public static function debug()
+        {
+                        return \Illuminate\Support\Collection::debug();
         }
             }
             /**
@@ -18919,24 +18930,6 @@ namespace Illuminate\Database\Eloquent\Relations {
          */        public static function getPowerJoinExistenceCompareKey()
         {
                         return \Illuminate\Database\Eloquent\Relations\Relation::getPowerJoinExistenceCompareKey();
-        }
-            }
-    }
-
-namespace Illuminate\Routing {
-            /**
-     * 
-     *
-     */        class Route {
-                    /**
-         * 
-         *
-         * @see \Livewire\Features\SupportLazyLoading\SupportLazyLoading::registerRouteMacro()
-         * @param mixed $enabled
-         * @static 
-         */        public static function lazy($enabled = true)
-        {
-                        return \Illuminate\Routing\Route::lazy($enabled);
         }
             }
     }
@@ -21246,6 +21239,24 @@ namespace Livewire\Features\SupportTesting {
          */        public static function assertTableColumnSummarizerExists($columnName, $summarizerId)
         {
                         return \Livewire\Features\SupportTesting\Testable::assertTableColumnSummarizerExists($columnName, $summarizerId);
+        }
+            }
+    }
+
+namespace Illuminate\Routing {
+            /**
+     * 
+     *
+     */        class Route {
+                    /**
+         * 
+         *
+         * @see \Livewire\Features\SupportLazyLoading\SupportLazyLoading::registerRouteMacro()
+         * @param mixed $enabled
+         * @static 
+         */        public static function lazy($enabled = true)
+        {
+                        return \Illuminate\Routing\Route::lazy($enabled);
         }
             }
     }
